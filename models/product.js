@@ -12,11 +12,11 @@ const Product = sequelize.define('product', {
   title: Sequelize.STRING,
   price: {
     type: Sequelize.DOUBLE,
-    allowNull: false,
+    allowNull: false
   },
   imageUrl: {
     type: Sequelize.STRING,
-    allowNull: false,
+    allowNull: false
   },
   description: {
     type: Sequelize.STRING,
