@@ -7,18 +7,29 @@
 
 // module.exports = sequelize;
 
+let _db;
 
 const mongodb = require('mongodb');
 const MongoClinet = mongodb.MongoClient;
 
 const mongoConnect = callback => {
 
-  MongoClinet.connect('mongodb+srv://Mohamed:Anaconda1@shop.zye25w7.mongodb.net/?retryWrites=true&w=majority')
+  MongoClinet.connect('mongodb+srv://Mohamed:Anaconda1@shop.zye25w7.mongodb.net/shop?retryWrites=true&w=majority')
     .then(client => {
       console.log('DB Connected');
+      _db = client.db();
       callback(client);
     })
-    .catch( err => console.log(err));
+    .catch( err => {
+      console.log(err)
+      throw err;
+    });
 }
 
-module.exports = mongoConnect;
+const getDB = () => {
+  if(_db) return _db;
+  throw 'No database found!';
+}
+
+exports.mongoConnect = mongoConnect;
+exports.getDB = getDB;
