@@ -50,6 +50,17 @@ class Product {
       })
       .catch(err => console.log(err));
   }
+
+  static deleteByID(prodId) {
+    const db = getDB();
+    return db.collection('products')
+      .deleteOne({_id: new mongoDB.ObjectId(prodId)})
+      .then(result => {
+        console.log("Product Deleted successfully");
+      })
+      .catch(err => console.log(err));
+  }
+
 }
 
 // const Product = sequelize.define('product', {
