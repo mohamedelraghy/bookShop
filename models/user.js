@@ -5,9 +5,11 @@ const ObjectId = mongoDB.ObjectId;
 
 
 class User {
-  constructor(username, email, id) {
+  constructor(username, email, cart, id) {
     this.name = username;
     this.email = email;
+    this.cart = cart;
+    this._id = id;
   }
 
   save() {
@@ -15,6 +17,29 @@ class User {
     return db
       .collection('users')
       .insertOne(this);
+  }
+
+  addToCart(product) {
+    console.log(this.cart);
+    const cartProductsIndex = this.cart.items.findIndex(cp => {
+      return cp.productId == product.id;
+    });
+ 
+    let newQuantity = 1;
+    const updaedCartItems = [...this.cart.items];
+
+    if(cartProductsIndex >= 0) {
+      newQuantity = this.cart.items[cartProductsIndex].quantity++;
+      updaedCartItems[cartProductsIndex].quantity = newQuantity;
+    } else {
+      updaedCartItems.push({ productId: new ObjectId(product._id) , quantity: newQuantity});
+    }
+    const updaedCart = {items: updaedCartItems};
+    const db = getDB();
+    return db.collection('users').updateOne(
+      { _id: new ObjectId(this._id)},
+      { $set: {cart: updaedCart}} 
+    );
   }
 
   static findById(userId) {
