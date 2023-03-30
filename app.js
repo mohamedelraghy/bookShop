@@ -36,4 +36,5 @@ mongoose
   .connect('mongodb+srv://Mohamed:Anaconda1@shop.zye25w7.mongodb.net/?retryWrites=true&w=majority')
   .then(result => {
     app.listen(3000);
+    console.log('DB connected & listening to 3000 prot');
   }).catch(err => console.log(err));
