@@ -19,12 +19,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-  User.findById('642496e1d26f8b23d63c946c')
-    .then(user => {
-      req.user = new User(user.name, user.email, user.cart, user._id);
-      next();
-    })
-    .catch(err => console.log(err));
+  // User.findById('642496e1d26f8b23d63c946c')
+  //   .then(user => {
+  //     req.user = new User(user.name, user.email, user.cart, user._id);
+  //     next();
+  //   })
+  //   .catch(err => console.log(err));
+  next();
 });
 
 app.use('/admin', adminRoutes);
@@ -33,7 +34,7 @@ app.use(shopRoutes);
 app.use(errorController.get404);
 
 mongoose
-  .connect('mongodb+srv://Mohamed:Anaconda1@shop.zye25w7.mongodb.net/?retryWrites=true&w=majority')
+  .connect('mongodb+srv://Mohamed:Anaconda1@shop.zye25w7.mongodb.net/shop?retryWrites=true&w=majority')
   .then(result => {
     app.listen(3000);
     console.log('DB connected & listening to 3000 prot');
