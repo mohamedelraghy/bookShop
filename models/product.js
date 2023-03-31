@@ -5,12 +5,11 @@ const Schema = mongoose.Schema;
 const productSchema = new Schema({
   title: {
     type: String,
-    required: true,
-
+    required: true
   },
   price: {
     type: Number,
-    required: true,
+    required: true
   },
   description: {
     type: String,
@@ -18,21 +17,19 @@ const productSchema = new Schema({
   },
   imageUrl: {
     type: String,
-    required: true 
+    required: true
   },
   userId: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
-
+    required: true
   }
 });
 
-
 module.exports = mongoose.model('Product', productSchema);
 
-
 // const mongodb = require('mongodb');
+// const getDb = require('../util/database').getDb;
 
 // class Product {
 //   constructor(title, price, description, imageUrl, id, userId) {
