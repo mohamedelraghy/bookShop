@@ -20,30 +20,29 @@ exports.getSignup = (req, res, next) => {
 exports.postLogin = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
-
-  User.findOne({email: email})
+  User.findOne({ email: email })
     .then(user => {
-      if(! user) {
-        req.flash('error', 'Invalid Email or Password');
-        return res.redirect('/login'); 
-      } 
-      return bcrypt.compare(password, user.password)
+      if (!user) {
+        req.flash('error', 'Invalid email or password.');
+        return res.redirect('/login');
+      }
+      bcrypt
+        .compare(password, user.password)
         .then(doMatch => {
-          if(doMatch) {
+          if (doMatch) {
             req.session.isLoggedIn = true;
             req.session.user = user;
             return req.session.save(err => {
               console.log(err);
               res.redirect('/');
             });
-          }  
+          }
           res.redirect('/login');
         })
         .catch(err => {
           console.log(err);
           res.redirect('/login');
         });
-      
     })
     .catch(err => console.log(err));
 };
@@ -57,7 +56,8 @@ exports.postSignup = (req, res, next) => {
       if (userDoc) {
         return res.redirect('/signup');
       }
-      return bcrypt.hash(password, 12)
+      return bcrypt
+        .hash(password, 12)
         .then(hashedPassword => {
           const user = new User({
             email: email,
@@ -66,9 +66,9 @@ exports.postSignup = (req, res, next) => {
           });
           return user.save();
         })
-    })
-    .then(result => {
-      res.redirect('/login');
+        .then(result => {
+          res.redirect('/login');
+        });
     })
     .catch(err => {
       console.log(err);
