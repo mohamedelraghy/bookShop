@@ -9,7 +9,7 @@ const User = require('../models/user');
 
 const transporter = nodemailer.createTransport(sendGridTransport({
   auth: {
-    api_key: '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'  
+    api_key: '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'  
   }
 }));
 
@@ -137,7 +137,7 @@ exports.getReset = (req, res, next) => {
 }
 
 exports.postReset = (req, res, next) => {
-  crypto.randomBytes(32, (err, Buffer) => {
+  crypto.randomBytes(32, (err, buffer) => {
     if(err) {
       console.log(err);
       return res.redirect('/reset');
@@ -146,18 +146,20 @@ exports.postReset = (req, res, next) => {
 
     User.findOne({email: req.body.email})
       .then(user => {
+        
         if(!user) {
           req.flash('error', 'No account with that email found.');
           return res.redirect('/reset');
         }
+
         user.resetToken = token;
-        user.resetTokenExpiration = Data.now() + 3600000;
+        user.resetTokenExpiration = Date.now() + 3600000;
         return user.save();
       })
       .then(result => {
         res.redirect('/');
         transporter.sendMail({
-          to: user.email,
+          to: req.body.email,
           from: 'elraghy8@gmail.com',
           subject: 'Reset Password',
           html: `
