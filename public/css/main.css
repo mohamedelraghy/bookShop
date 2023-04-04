@@ -257,5 +257,7 @@ form {
     display: none;
   }
 
-  w
+  .user-message {
+    width: 30rem;
+  }
 }

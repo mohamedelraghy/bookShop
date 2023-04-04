@@ -2,27 +2,27 @@ const crypto = require('crypto');
 
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
-const sendGridTransport = require('nodemailer-sendgrid-transport');
+const sendgridTransport = require('nodemailer-sendgrid-transport');
 const { validationResult } = require('express-validator');
 
 const User = require('../models/user');
 
-
-const transporter = nodemailer.createTransport(sendGridTransport({
-  auth: {
-    api_key: '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'  
-  }
-}));
+const transporter = nodemailer.createTransport(
+  sendgridTransport({
+    auth: {
+      api_key:
+        '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'
+    }
+  })
+);
 
 exports.getLogin = (req, res, next) => {
   let message = req.flash('error');
-
   if (message.length > 0) {
     message = message[0];
   } else {
     message = null;
   }
-
   res.render('auth/login', {
     path: '/login',
     pageTitle: 'Login',
@@ -32,13 +32,11 @@ exports.getLogin = (req, res, next) => {
 
 exports.getSignup = (req, res, next) => {
   let message = req.flash('error');
-
   if (message.length > 0) {
     message = message[0];
   } else {
     message = null;
   }
-
   res.render('auth/signup', {
     path: '/signup',
     pageTitle: 'Signup',
@@ -80,9 +78,8 @@ exports.postLogin = (req, res, next) => {
 exports.postSignup = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
-  const confirmPassword = req.body.confirmPassword;
-  const errors = validationResult(req);
 
+  const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.log(errors.array());
     return res.status(422).render('auth/signup', {
@@ -91,7 +88,7 @@ exports.postSignup = (req, res, next) => {
       errorMessage: errors.array()[0].msg
     });
   }
-  
+
   bcrypt
     .hash(password, 12)
     .then(hashedPassword => {
@@ -124,38 +121,32 @@ exports.postLogout = (req, res, next) => {
 };
 
 exports.getReset = (req, res, next) => {
-
   let message = req.flash('error');
-
   if (message.length > 0) {
     message = message[0];
   } else {
     message = null;
   }
-
   res.render('auth/reset', {
     path: '/reset',
     pageTitle: 'Reset Password',
     errorMessage: message
   });
-}
+};
 
 exports.postReset = (req, res, next) => {
   crypto.randomBytes(32, (err, buffer) => {
-    if(err) {
+    if (err) {
       console.log(err);
       return res.redirect('/reset');
     }
     const token = buffer.toString('hex');
-
-    User.findOne({email: req.body.email})
+    User.findOne({ email: req.body.email })
       .then(user => {
-        
-        if(!user) {
+        if (!user) {
           req.flash('error', 'No account with that email found.');
           return res.redirect('/reset');
         }
-
         user.resetToken = token;
         user.resetTokenExpiration = Date.now() + 3600000;
         return user.save();
@@ -177,39 +168,38 @@ exports.postReset = (req, res, next) => {
 }
 
 exports.getNewPassword = (req, res, next) => {
-
   const token = req.params.token;
-  User.findOne({resetToken: token, resetTokenExpiration: {$gt: Date.now()}})
+  User.findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now() } })
     .then(user => {
       let message = req.flash('error');
-
       if (message.length > 0) {
         message = message[0];
       } else {
         message = null;
       }
-      
       res.render('auth/new-password', {
         path: '/new-password',
-        pageTitle: 'Update Password',
+        pageTitle: 'New Password',
         errorMessage: message,
         userId: user._id.toString(),
-        token: token
+        passwordToken: token
       });
     })
-    .catch(err => console.log(err));
-}
+    .catch(err => {
+      console.log(err);
+    });
+};
 
 exports.postNewPassword = (req, res, next) => {
   const newPassword = req.body.password;
   const userId = req.body.userId;
-  const token = req.body.token;
+  const passwordToken = req.body.passwordToken;
   let resetUser;
 
   User.findOne({
-    resetToken: token, 
-    resetTokenExpiration: {$gt: Date.now()}, 
-    _id: userId 
+    resetToken: passwordToken,
+    resetTokenExpiration: { $gt: Date.now() },
+    _id: userId
   })
     .then(user => {
       resetUser = user;
@@ -224,5 +214,7 @@ exports.postNewPassword = (req, res, next) => {
     .then(result => {
       res.redirect('/login');
     })
-    .catch(err => console.log(err));
-}
+    .catch(err => {
+      console.log(err);
+    });
+};
