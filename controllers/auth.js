@@ -91,36 +91,29 @@ exports.postSignup = (req, res, next) => {
       errorMessage: errors.array()[0].msg
     });
   }
-  User.findOne({ email: email })
-    .then(userDoc => {
-      if (userDoc) {
-        req.flash('error', 'E-mail is already registered, please pick a different email');
-        return res.redirect('/signup');
-      }
-      return bcrypt
-        .hash(password, 12)
-        .then(hashedPassword => {
-          const user = new User({
-            email: email,
-            password: hashedPassword,
-            cart: { items: [] }
-          });
-          return user.save();
-        })
-        .then(result => {
-          res.redirect('/login');
-          console.log(email);
-          return transporter.sendMail({
-            to: email,
-            from: 'elraghy8@gmail.com',
-            subject: 'Signup Succeeded',
-            html: '<h1>You successfully signed up</h1>'
-          })
-        }).catch(err => console.log(err));
+  
+  bcrypt
+    .hash(password, 12)
+    .then(hashedPassword => {
+      const user = new User({
+        email: email,
+        password: hashedPassword,
+        cart: { items: [] }
+      });
+      return user.save();
     })
-    .catch(err => {
-      console.log(err);
-    });
+    .then(result => {
+      res.redirect('/login');
+      console.log(email);
+      return transporter.sendMail({
+        to: email,
+        from: 'elraghy8@gmail.com',
+        subject: 'Signup Succeeded',
+        html: '<h1>You successfully signed up</h1>'
+      })
+    })
+    .catch(err => console.log(err));
+  
 };
 
 exports.postLogout = (req, res, next) => {
