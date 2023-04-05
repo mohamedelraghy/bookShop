@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport(
   sendgridTransport({
     auth: {
       api_key:
-        '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'
+      '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'
     }
   })
 );
@@ -117,7 +117,7 @@ exports.postLogin = (req, res, next) => {
     .catch(err => {
       const error = new Error(err);
       error.httpStatusCode = 500;
-      return next(err);
+      return next(error);
     });
 };
 
@@ -164,9 +164,8 @@ exports.postSignup = (req, res, next) => {
     .catch(err => {
       const error = new Error(err);
       error.httpStatusCode = 500;
-      return next(err);
+      return next(error);
     });
-  
 };
 
 exports.postLogout = (req, res, next) => {
@@ -222,9 +221,9 @@ exports.postReset = (req, res, next) => {
       .catch(err => {
         const error = new Error(err);
         error.httpStatusCode = 500;
-        return next(err);
+        return next(error);
       });
-  })
+  });
 };
 
 exports.getNewPassword = (req, res, next) => {
@@ -248,7 +247,7 @@ exports.getNewPassword = (req, res, next) => {
     .catch(err => {
       const error = new Error(err);
       error.httpStatusCode = 500;
-      return next(err);
+      return next(error);
     });
 };
 
@@ -279,6 +278,6 @@ exports.postNewPassword = (req, res, next) => {
     .catch(err => {
       const error = new Error(err);
       error.httpStatusCode = 500;
-      return next(err);
+      return next(error);
     });
 };
