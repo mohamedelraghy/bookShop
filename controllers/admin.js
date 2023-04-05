@@ -1,6 +1,7 @@
 const { validationResult } = require('express-validator');
 
 const Product = require('../models/product');
+const { render } = require('pug');
 
 exports.getAddProduct = (req, res, next) => {
   res.render('admin/edit-product', {
@@ -24,7 +25,7 @@ exports.postAddProduct = (req, res, next) => {
     console.log(errors.array());
     return res.status(422).render('admin/edit-product', {
       pageTitle: 'Add Product',
-      path: '/admin/edit-product',
+      path: '/admin/add-product',
       editing: false,
       hasError: true,
       product: {
@@ -53,7 +54,7 @@ exports.postAddProduct = (req, res, next) => {
       res.redirect('/admin/products');
     })
     .catch(err => {
-      console.log(err);
+      res.redirect('/500');
     });
 };
 
