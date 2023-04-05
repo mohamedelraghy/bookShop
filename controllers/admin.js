@@ -21,13 +21,13 @@ exports.postAddProduct = (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    console.log(errors);
+    console.log(errors.array());
     return res.status(422).render('admin/edit-product', {
       pageTitle: 'Add Product',
       path: '/admin/edit-product',
       editing: false,
       hasError: true,
-      product:{
+      product: {
         title: title,
         imageUrl: imageUrl,
         price: price,
@@ -91,13 +91,12 @@ exports.postEditProduct = (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    console.log(errors);
     return res.status(422).render('admin/edit-product', {
       pageTitle: 'Edit Product',
       path: '/admin/edit-product',
       editing: true,
       hasError: true,
-      product:{
+      product: {
         title: updatedTitle,
         imageUrl: updatedImageUrl,
         price: updatedPrice,
@@ -111,7 +110,6 @@ exports.postEditProduct = (req, res, next) => {
 
   Product.findById(prodId)
     .then(product => {
-      console.log(product);
       if (product.userId.toString() !== req.user._id.toString()) {
         return res.redirect('/');
       }
