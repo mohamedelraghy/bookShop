@@ -7,3 +7,6 @@ nodemon.json
 
 *.pdf
 *.log
+
+*.cert
+*.key
