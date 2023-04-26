@@ -30,8 +30,8 @@ const store = new MongoDBStore({
 });
 const csrfProtection = csrf();
 
-const privateKey = fs.readFileSync('server.key');
-const certificate = fs.readFileSync('server.cert');
+// const privateKey = fs.readFileSync('server.key');
+// const certificate = fs.readFileSync('server.cert');
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -123,10 +123,11 @@ mongoose
   .then(result => {
     port = process.env.PORT || 3000;
     console.log('server up at ' + port);
-    https.createServer({
-      key: privateKey,
-      cert: certificate
-    }, app).listen(port);
+    // https.createServer({
+    //   key: privateKey,
+    //   cert: certificate
+    // }, app).listen(port);
+    app.listen(port);
   })
   .catch(err => {
     console.log(err);
