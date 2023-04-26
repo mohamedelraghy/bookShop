@@ -155,7 +155,7 @@ exports.postSignup = (req, res, next) => {
       console.log(email);
       return transporter.sendMail({
         to: email,
-        from: 'elraghy8@gmail.com',
+        from: 'elraghy8+noreplay@gmail.com',
         subject: 'Signup Succeeded',
         html: '<h1>You successfully signed up</h1>'
       })
@@ -194,6 +194,7 @@ exports.postReset = (req, res, next) => {
       console.log(err);
       return res.redirect('/reset');
     }
+
     const token = buffer.toString('hex');
     User.findOne({ email: req.body.email })
       .then(user => {
@@ -205,11 +206,11 @@ exports.postReset = (req, res, next) => {
         user.resetTokenExpiration = Date.now() + 3600000;
         return user.save();
       })
-      .then(result => {
+      .then( () => {
         res.redirect('/');
         transporter.sendMail({
           to: req.body.email,
-          from: 'elraghy8@gmail.com',
+          from: 'elraghy8+noreplay@gmail.com',
           subject: 'Reset Password',
           html: `
             <p>You requested a password Reset</p>
