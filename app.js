@@ -7,6 +7,7 @@ const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const csrf = require('csurf');
 const flash = require('connect-flash');
+const helemt = require('helmet');
 
 
 const errorController = require('./controllers/error');
@@ -34,6 +35,7 @@ const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 
+app.use(helemt());
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
