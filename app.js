@@ -16,13 +16,11 @@ const shopController = require('./controllers/shop');
 const isAuth = require('./middleware/is-auth');
 
 
-const MONGODB_URI = 'mongodb://rootuser:rootpass@localhost:27017'
-  // 'mongodb+srv://Mohamed:Anaconda1@shop.zye25w7.mongodb.net/shop?retryWrites=true&w=majority';
 
 const app = express();
 
 const store = new MongoDBStore({
-  uri: MONGODB_URI,
+  uri: process.env.MONGODB_URI,
   collection: 'sessions'
 });
 const csrfProtection = csrf();
@@ -107,10 +105,11 @@ app.use((error, req, res, next) => {
 });
 
 mongoose
-  .connect(MONGODB_URI)
+  .connect(process.env.MONGODB_URI)
   .then(result => {
-    console.log('server up');
-    app.listen(3000);
+    port = process.env.PORT || 3000;
+    console.log('server up at ' + port);
+    app.listen(port);
   })
   .catch(err => {
     console.log(err);
